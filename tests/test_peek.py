@@ -1,14 +1,12 @@
 import pytest
 import subprocess
 
-def pytest_namespace():
-    return {'peek_proc': subprocess.Popen(['python', 'peek/peek.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)}
-
-@pytest.fixture(autouse=True)
-def procSetup():
-    pytest.peek_proc = subprocess.Popen(['python', 'peek/peek.py'], 
-                                    stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-
 def test_ProgramExists():
-    peek_output = pytest.peek_proc.communicate(input='1'.encode())[0]
+    peek_proc = subprocess.Popen(['python', 'peek/peek.py'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    peek_output = peek_proc.communicate()[0]
     assert peek_output != None
+
+def test_CanContactGoodUrl():
+    peek_proc = subprocess.Popen(['python', 'peek/peek.py', 'https://www.google.com'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    peek_output = peek_proc.communicate()[0]
+    assert peek_output == b'Welcome to peek v0.1\r\nTarget website up!\r\n'
