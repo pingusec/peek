@@ -10,3 +10,8 @@ def test_CanContactGoodUrl():
     peek_proc = subprocess.Popen(['python', 'peek/peek.py', 'https://www.google.com'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
     peek_output = peek_proc.communicate()[0]
     assert peek_output == b'Welcome to peek v0.1\r\nTarget website up!\r\n'
+
+def test_CanContactBadUrl():
+    peek_proc = subprocess.Popen(['python', 'peek/peek.py', 'https://woogle.com'], stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    peek_output = peek_proc.communicate()[0]
+    assert peek_output == b'Welcome to peek v0.1\r\nTarget does not appear to be up.\r\n'
