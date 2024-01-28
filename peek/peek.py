@@ -31,13 +31,13 @@ def main(target_url: Annotated[str, typer.Argument()], wordlist_path: Annotated[
 def dirRecon(target_url: str, wordlist_path: str):
     print('Starting directory recon')
 
-    default_extensions = ['', 'html', 'htm', 'php', 'js', 'jsx', 'pdf']
+    default_extensions = ['/', '.html', '.htm', '.php', '.js', '.jsx', '.pdf']
 
     wordlist = open(wordlist_path, 'r')
 
     for word in wordlist:
         for ext in default_extensions:
-            url = target_url + '/' + word.strip() + f'.{ext}'
+            url = f'{target_url}/{word.strip()}{ext}'
             resp = attemptUrl(url)
 
             if resp in [200, 301, 302, 307, 308, 401, 403]:
