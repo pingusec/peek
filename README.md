@@ -17,6 +17,7 @@
 - Peek provides a quick and easy to to conduct directory reconnaissance.
 	`pingu@pingu:~$ python peek.py [url] [worldlist(.txt)]`
 - For example,
+  
 	`pingu@pingu:~$ python peek.py 'http://127.0.0.1:8000 wordlist.txt'` 
 	```
 	+-----------------------------------------------------+
