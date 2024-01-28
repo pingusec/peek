@@ -1,11 +1,12 @@
-import typer
 import os
+import time
+import typer
 import requests
-from utils import validateURL, UrlStatus
 from rich import print
 from rich.table import Table
 from rich.console import Console
 from typing_extensions import Annotated
+from utils import validateURL, UrlStatus
 
 version = '0.1'
 app = typer.Typer()
@@ -39,12 +40,14 @@ def main(target_url: Annotated[str, typer.Argument()], wordlist_path: Annotated[
 
 def dirRecon(target_url: str, wordlist_path: str):
     print('============================')
-    print('[green][+][white] Starting directory recon')
+    print('[bold green][+][/bold green] Starting directory recon')
     print('============================')
 
     default_extensions = ['/', '.html', '.htm', '.php', '.js', '.jsx', '.pdf']
 
     wordlist = open(wordlist_path, 'r')
+
+    start_time = time.time()
 
     for word in wordlist:
         for ext in default_extensions:
@@ -52,8 +55,12 @@ def dirRecon(target_url: str, wordlist_path: str):
             resp = attemptUrl(url)
 
             if resp in [200, 301, 302, 307, 308, 401, 403]:
-                print('/' + word.strip() + f' ({str(resp)})')
+                print('> /' + word.strip() + f' ({str(resp)})')
 
+    end_time = time.time()
+    print('============================')
+    print(f'[bold green][+][/bold green] Finished in {round(end_time - start_time, 2)}s')
+    print('============================')
 
 def attemptUrl(target_url:  str):
     response = requests.head(target_url.strip(), allow_redirects=True)
