@@ -14,31 +14,39 @@ def main(target_url: Annotated[str, typer.Argument()], wordlist_path: Annotated[
     # Checking if target url is a valid url and is reachable and if the wordlist exists
     match validateURL(target_url):
         case UrlStatus.UNREACHABLE:
-            print('The target %s appears to be unreachable.', target_url)
+            print(f'The target {target_url} appears to be unreachable.')
+        
         case UrlStatus.BADLY_FORMED:
-            print('The target %s appears to be a badly formed URL.', target_url)
+            print(f'The target {target_url} appears to be a badly formed URL.')
+        
         case UrlStatus.UP:
-            print('The target %s appears to be up!', target_url)
+            print(f'The target {target_url} appears to be up!')
+        
             if os.path.exists(wordlist_path):
                 dirRecon(target_url, wordlist_path)
+        
             else:
                 print('Wordlist file "%s" does not exist.', wordlist_path)
-    
-def dirRecon(target_url: str, wordlist_path: str):       
-    print('Starting direcotory recon')
-    
+
+def dirRecon(target_url: str, wordlist_path: str):
+    print('Starting directory recon')
+
+    default_extensions = ['', 'html', 'htm', 'php', 'js', 'jsx', 'pdf']
+
     wordlist = open(wordlist_path, 'r')
 
     for word in wordlist:
-        c_url = target_url + '/' + word
-        print(c_url.strip())
-        response = requests.head(c_url.strip(), allow_redirects=True, timeout=5)
-        print(response.status_code)
-        if response.status_code != 404:
-            print('/' + word + ': EXISTS')
+        for ext in default_extensions:
+            url = target_url + '/' + word.strip() + f'.{ext}'
+            resp = attemptUrl(url)
 
-    else:
-        print("File does not exist!")
+            if resp in [200, 301, 302, 307, 308, 401, 403]:
+                print('/' + word.strip() + f' ({str(resp)})')
+
+
+def attemptUrl(target_url:  str):
+    response = requests.head(target_url.strip(), allow_redirects=True)
+    return response.status_code
 
 if __name__ == "__main__":
     app()
