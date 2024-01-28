@@ -26,12 +26,12 @@ def main(target_url: Annotated[str, typer.Argument()], wordlist_path: Annotated[
             prog_output.add_row(f'The target {target_url} appears to be a badly formed URL.')
         
         case UrlStatus.UP:
-            prog_output.add_row(f'Target url ({target_url}) seems to be up!')
+            prog_output.add_row(f'Target url: {target_url} (seems to be up!)')
         
             if os.path.exists(wordlist_path):
                 err = False
                 console.print(prog_output)
-                print('\n')
+                print('[red]> NOTE: These requests can be monitored by the web server. They are not invisible.')
                 dirRecon(target_url, wordlist_path)
         
             else:
