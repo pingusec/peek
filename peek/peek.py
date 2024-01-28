@@ -3,33 +3,44 @@ import os
 import requests
 from utils import validateURL, UrlStatus
 from rich import print
+from rich.table import Table
+from rich.console import Console
 from typing_extensions import Annotated
 
+version = '0.1'
 app = typer.Typer()
+console = Console()
 
 @app.command()
 def main(target_url: Annotated[str, typer.Argument()], wordlist_path: Annotated[str, typer.Argument()]):
-    print("Welcome to peek v0.1")
+    err = True
+    prog_output  = Table(f'Welcome to peek v{version}')
 
     # Checking if target url is a valid url and is reachable and if the wordlist exists
     match validateURL(target_url):
         case UrlStatus.UNREACHABLE:
-            print(f'The target {target_url} appears to be unreachable.')
+            prog_output.add_row(f'Target url ({target_url}) seems to be unreachable.')
         
         case UrlStatus.BADLY_FORMED:
-            print(f'The target {target_url} appears to be a badly formed URL.')
+            prog_output.add_row(f'The target {target_url} appears to be a badly formed URL.')
         
         case UrlStatus.UP:
-            print(f'The target {target_url} appears to be up!')
+            prog_output.add_row(f'Target url ({target_url}) seems to be up!')
         
             if os.path.exists(wordlist_path):
+                err = False
+                console.print(prog_output)
+                print('\n')
                 dirRecon(target_url, wordlist_path)
         
             else:
-                print('Wordlist file "%s" does not exist.', wordlist_path)
+                prog_output.add_row('Wordlist file "%s" does not exist.', wordlist_path)
+    if err: console.print(prog_output)
 
 def dirRecon(target_url: str, wordlist_path: str):
-    print('Starting directory recon')
+    print('============================')
+    print('[green][+][white] Starting directory recon')
+    print('============================')
 
     default_extensions = ['/', '.html', '.htm', '.php', '.js', '.jsx', '.pdf']
 
