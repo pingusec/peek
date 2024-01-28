@@ -1,0 +1,6 @@
+requests
+typer
+re
+os
+typing_extensions
+enum
