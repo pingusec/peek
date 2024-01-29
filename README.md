@@ -14,7 +14,7 @@
 > 
 > It is on you, don't do something stupid.
 
-- Peek provides a quick and easy to to conduct directory reconnaissance.
+- Peek provides a quick and easy way to conduct directory reconnaissance.
 	`pingu@pingu:~$ python peek.py [url] [worldlist(.txt)]`
 - For example,
   
